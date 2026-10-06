@@ -1,7 +1,7 @@
 # Needoh-Factory
 A tycoon/factory game about buying and merging Needohs to get cooler and more profitable needohs
 
-<img width="2121" height="1129" alt="Screenshot 2026-09-14 185535" src="https://github.com/user-attachments/assets/eabdfad0-91ba-4e3c-8183-03af5542f238" />
+<img width="2126" height="1142" alt="Screenshot 2026-10-05 183937" src="https://github.com/user-attachments/assets/d0942c41-b328-4e8d-8814-3898e3f90433" />
 
 
 ## Play the Game
