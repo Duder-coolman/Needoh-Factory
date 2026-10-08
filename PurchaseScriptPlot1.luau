@@ -1,4 +1,5 @@
 local MergeModule = require(game.ServerScriptService:WaitForChild("MergeModule"))
+local StartupModule = require(game.ServerScriptService:WaitForChild("StartupModule"))
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local Tier1PreFab = replicatedStorage:WaitForChild("Droppers"):WaitForChild("01")
 local debounce = true
@@ -33,7 +34,7 @@ local function SpawnTier1(plotfolder)
 					end
 
 					newNeedoh.Parent = slot
-					return true -- Placed successfully
+					return true
 				end
 			end
 		end
@@ -46,26 +47,7 @@ end
 local BasePrice = 10
 local PriceIncrement = 1.5
 
-local Suffixes = {"", "k", "m", "b", "t", "qa", "qi", "sx", "sp", "oc", "no", "dc"}
 
-local function formatNumber(n)
-	if n < 1000 then
-		return tostring(math.floor(n))
-	end
-
-	local index = math.floor(math.log10(n) / 3)
-	index = math.min(index, #Suffixes - 1)
-	
-	local scaled = n / (10 ^ (index * 3))
-	local suffix = Suffixes[index + 1]
-
-	if scaled >= 100 then
-		return string.format("%.0f%s", scaled, suffix)
-	else
-		local formatted = string.format("%.1f%s", scaled, suffix)
-		return (formatted:gsub("%.0", ""))
-	end
-end
 
 local function calculatePurchase(amountToBuy, droppersOwned)
 	local totalCost = (amountToBuy * BasePrice) + PriceIncrement * (amountToBuy * droppersOwned + (amountToBuy * (amountToBuy - 1)) / 2)
@@ -86,6 +68,7 @@ local function setupButton(button, amount)
 		local player = game.Players:GetPlayerFromCharacter(hit.Parent)
 		if player and debounce then
 			local Coinstat = player.leaderstats.Coins
+			local Goostat = player.leaderstats.Goo
 			local PlotNum = player.PlotNumber
 			local DroppersOwned = player:WaitForChild("DroppersOwned")
 			local LastPrice = player:WaitForChild("DropperPrice")
@@ -96,9 +79,10 @@ local function setupButton(button, amount)
 			if PlotNum.Value == tonumber(button.Parent.Parent.Name) and Coinstat.Value >= Cost then
 				debounce = false
 
-				print(player.Name, "bought", amount, "For $" .. formatNumber(Cost))
+				print(player.Name, "bought", amount, "For $" .. StartupModule.formatNumber(Cost))
 
 				Coinstat.Value -= Cost
+				Goostat.Value -= 0
 				DroppersOwned.Value += amount
 				local plotFolder = workspace.Map.Plots:FindFirstChild(tostring(PlotNum.Value))
 
@@ -122,15 +106,8 @@ local function setupButton(button, amount)
 				button.BrickColor = BrickColor.new("Really red")
 				
 				--updates buton display
-				local cost1 = calculateDisplayedPurchase(1, DroppersOwned.Value)
-				local cost5 = calculateDisplayedPurchase(5, DroppersOwned.Value)
-				local cost25 = calculateDisplayedPurchase(25, DroppersOwned.Value)
-				local cost100 = calculateDisplayedPurchase(100, DroppersOwned.Value)
-				Btn1Bill.Text = "$" .. formatNumber(cost1)
-				Btn5Bill.Text = "$" .. formatNumber(cost5)
-				Btn25Bill.Text = "$" .. formatNumber(cost25)
-				Btn100Bill.Text = "$" .. formatNumber(cost100)
-				
+				StartupModule.UpdatePurchaseBtnDisp(PlotNum, DroppersOwned)
+
 				task.wait(0.7)
 				button.Color = Color3.fromHex("#68d94e")
 				debounce = true
@@ -141,8 +118,19 @@ local function setupButton(button, amount)
 	end)
 end
 
+local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+wait(6)
+	local plrplot = player:WaitForChild("PlotNumber")
+	local plrDroppers = player:WaitForChild("DroppersOwned")
+	if tostring(plrplot.Value) == script.Parent.Parent.Name or plrplot.Value == tonumber(script.Parent.Parent.Name) then
+		StartupModule.UpdatePurchaseBtnDisp(plrplot, plrDroppers)
+	end
+end)
+
+
 setupButton(Purchase1Btn, 1)
 setupButton(Purchase5Btn, 5)
 setupButton(Purchase25Btn, 25)
 setupButton(Purchase100Btn, 100)
-setupButton(Purchase0Btn, 0)
