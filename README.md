@@ -22,6 +22,6 @@ open the link and make a roblox account then click play or just click play if yo
 
 
 ## Credits
-I used tutorials to learn what to write and got help from roblox studios built in AI not to write any criptss but to explain why they work to me.
+I used tutorials to learn what to write and got help from roblox studios built in AI, not to write any scripts but to explain why they work to me.
 
 
