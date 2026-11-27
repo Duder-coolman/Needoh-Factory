@@ -16,13 +16,20 @@ local LSGUI = starterGui:WaitForChild("LeftSideGUI")
 local GSFrame = LSGUI:WaitForChild("GearShop")
 local RSFrame = LSGUI:WaitForChild("RobuxShop")
 local TSFrame =LSGUI:WaitForChild("TeleportLocation")
+local RSG = starterGui:WaitForChild("RightSideGui")
+local P = RSG:WaitForChild("PlaytimeRewards")
+local D = RSG:WaitForChild("DailyRewards")
+local I = RSG:WaitForChild("Inventory")
 
 btn.MouseButton1Click:Connect(function()
 	if SettingsFrame.Visible == false then
-		if GSFrame.Visible or RSFrame.Visible or TSFrame.Visible then
+		if GSFrame.Visible or RSFrame.Visible or TSFrame.Visible or P.Visible or D.Visible or I.Visible then
 			GSFrame.Visible = false
 			RSFrame.Visible = false
 			TSFrame.Visible = false
+			P.Visible = false
+			D.Visible = false
+			I.Visible = false
 		end
 		SettingsFrame.Visible = true
 	else
